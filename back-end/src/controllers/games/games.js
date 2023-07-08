@@ -10,8 +10,3 @@ const isActive = ()=>{};
 
 const movePieces = ()=>{};
 
-
-
-
-
-
