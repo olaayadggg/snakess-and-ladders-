@@ -29,8 +29,7 @@ const register = async (req, res, next) => {
 
     }
     const user = await userModel.create(newuser);
-    const token = signAccessToken(user);
-    return res.status(201).json({ user: user, token: token });
+    return res.status(201).json({ user: user });
 
   } catch (err) {
     console.log(err);

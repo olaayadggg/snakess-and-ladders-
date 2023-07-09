@@ -1,8 +1,9 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 
-const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Tasbeh@42101174', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root3', '123456789', {
     host: 'localhost',
+    port:8081,
     dialect: 'mysql'
 });
 
@@ -14,12 +15,7 @@ const userSchema = sequelize.define('user', {
         primaryKey: true,
         autoIncrement: true
     },
-    age: {
-        type: DataTypes.INTEGER
-    },
-    email: {
-        type: DataTypes.STRING(50)
-    },
+
     name: {
         type: DataTypes.STRING(50)
     },
@@ -28,7 +24,8 @@ const userSchema = sequelize.define('user', {
     }
 });
 
-sequelize.sync();
+
+
 
 // Example to create another table in the database
 
@@ -51,6 +48,8 @@ const elementSchema = sequelize.define('element', {
     }
 });
 
+sequelize.sync();
+
 
 
 const boardSchema = sequelize.define('board', {
@@ -64,8 +63,52 @@ const boardSchema = sequelize.define('board', {
     name: {
         type: DataTypes.STRING(50)
     },
-    image:{
+    image: {
         type: DataTypes.STRING(255)
     }
-  
+
+});
+
+
+const gameUserSchema = sequelize.define('gameUser', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    userID: {
+        type: DataTypes.INTEGER
+    },
+    gameID: {
+        type: DataTypes.INTEGER
+    },
+    position: {
+        type: DataTypes.INTEGER
+    }
+});
+
+
+
+
+const gameSchema = sequelize.define('game', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    boardID: {
+        type: DataTypes.INTEGER
+    },
+    status: {
+        type: DataTypes.STRING(50)
+    },
+    capacity: {
+        type: DataTypes.INTEGER
+    },
+    currentUser: {
+        type:DataTypes.STRING(50)
+    },
+    lastMove: {
+        type: DataTypes.DOUBLE
+    }
 });
