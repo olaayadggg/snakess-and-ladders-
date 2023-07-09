@@ -1,6 +1,7 @@
 import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import landingPage from './components/landingPage'
+import BasicForm from '../src/components/BasicForm'
 // import img from '../src/istockphoto-455302535-612x612.jpg';
 
 export default function App() {
