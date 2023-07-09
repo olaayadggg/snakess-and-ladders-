@@ -1,7 +1,7 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 
-const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Ahmedkhali12345@#$%', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Tasbeh@42101174', {
     host: 'localhost',
     dialect: 'mysql'
 });
@@ -56,10 +56,10 @@ const boardSchema = sequelize.define('board', {
     name: {
         type: DataTypes.STRING(50)
     },
-    image:{
+    image: {
         type: DataTypes.STRING(255)
     }
-  
+
 });
 
 const gameSchema = sequelize.define('game', {
@@ -78,7 +78,7 @@ const gameSchema = sequelize.define('game', {
         type: DataTypes.INTEGER
     },
     currentUser: {
-        type:DataTypes.STRING(50)
+        type: DataTypes.STRING(50)
     },
     lastMove: {
         type: DataTypes.DOUBLE
