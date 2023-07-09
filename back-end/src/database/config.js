@@ -1,7 +1,7 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 
-const sequelize = new Sequelize('snakes-and-ladders', 'root', '', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Tasbeh@42101174', {
     host: 'localhost',
     dialect: 'mysql'
 });
@@ -49,4 +49,23 @@ const elementSchema = sequelize.define('element', {
     to: {
         type: DataTypes.INTEGER
     }
+});
+
+
+
+const boardSchema = sequelize.define('board', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+
+
+    },
+    name: {
+        type: DataTypes.STRING(50)
+    },
+    image:{
+        type: DataTypes.STRING(255)
+    }
+  
 });
