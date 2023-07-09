@@ -1,24 +1,46 @@
 let gameId=null
+let current_turn=0
 let lastMove = 0
-// let users =
+const users = [ [1000, 21],
+    [300, 40],
+    [700, 35]
+];
 
 
-const end =()=>{};
+ const end =()=>{
+ //    emit to users (declare winners) , end game  , change status of game
+ };
 
-const checkRemainingUsers = ()=>{};
+const checkRemainingUsers = ()=>{
+    users.length===1?end():0;
+}
 
 const dice =()=>{
-
+    const randomDecimal = Math.random();
+    // Scale the random decimal to a number between 1 and 6
+    return Math.floor(randomDecimal * 6) + 1;
 };
+const kickUser=(index)=>{
+    users.splice(index,1)
+//  delete from database
+}
+setInterval(()=>{
+ lastMove>=20?kickUser(current_turn):0
+    },20000
+)
 
-// setInterval(()=>{
-// // lastMove==0?:
-// // kicking player out
-//     },20000
-// )
 
 
 const movePieces = ()=>{
-    lastMove=0
+        const diceNumber = dice();
+        users[current_turn][1]+=diceNumber
+        checkWinner();
+        checkRemainingUsers();
+        current_turn=(current_turn+1)%users.length
 };
 
+const checkWinner = ()=>{
+    if (users[current_turn][1] === 100) {
+        end();
+    }
+};
