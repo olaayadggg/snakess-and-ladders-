@@ -58,8 +58,6 @@ const boardSchema = sequelize.define('board', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-
-
     },
     name: {
         type: DataTypes.STRING(50)
@@ -68,4 +66,27 @@ const boardSchema = sequelize.define('board', {
         type: DataTypes.STRING(255)
     }
   
+});
+
+const gameSchema = sequelize.define('game', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    boardID: {
+        type: DataTypes.INTEGER
+    },
+    status: {
+        type: DataTypes.STRING(50)
+    },
+    capacity: {
+        type: DataTypes.INTEGER
+    },
+    currentUser: {
+        type:DataTypes.STRING(50)
+    },
+    lastMove: {
+        type: DataTypes.DOUBLE
+    }
 });
