@@ -35,11 +35,11 @@
 
 // sequelize.sync();
 
-import express from 'express';
+// import express from 'express';
 
-const app = express()
+// const app = express()
 
-app.use(express.json())
-import { Sequelize } from 'sequelize';
+// app.use(express.json())
+// import { Sequelize } from 'sequelize';
 
 

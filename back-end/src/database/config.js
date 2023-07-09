@@ -1,28 +1,21 @@
-import { INTEGER, Sequelize } from 'sequelize';
-import { Sequelize, Model, DataTypes } from 'sequelize';
-
-
-
+import pkg from 'sequelize';
+const { Sequelize, DataTypes } = pkg;
 
 const sequelize = new Sequelize('snakes-and-ladders', 'root', '', {
     host: 'localhost',
-    dialect: 'mysql '
+    dialect: 'mysql'
 });
 
+// Example to create a table in the database
 
-
-// example to create table in the database
-
-const userSchema = connection.define('user', {
+const userSchema = sequelize.define('user', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     age: {
-        type:DataTypes.INTEGER,
-
-
+        type: DataTypes.INTEGER
     },
     email: {
         type: DataTypes.STRING(50)
@@ -34,8 +27,26 @@ const userSchema = connection.define('user', {
         type: DataTypes.STRING(100)
     }
 });
-connection.sync()
+
+sequelize.sync();
+
+// Example to create another table in the database
+
+const elementSchema = sequelize.define('element', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
 
 
-// example to create table in the database
-
+    },
+    gameID: {
+        type: DataTypes.INTEGER
+    },
+    from: {
+        type: DataTypes.INTEGER
+    },
+    to: {
+        type: DataTypes.INTEGER
+    }
+});
