@@ -35,7 +35,11 @@
 
 // sequelize.sync();
 
-const express = require('express');
-const { Sequelize } = require('sequelize');
+import express from 'express';
+
+const app = express()
+
+app.use(express.json())
+import { Sequelize } from 'sequelize';
 
 
