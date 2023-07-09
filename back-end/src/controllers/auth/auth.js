@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const fs = require("fs")
 const userModel = require('../models/user');
-const signAccessToken = require("../utiles/signAccessToken");
 
 
 
@@ -64,3 +63,48 @@ module.exports = {
   register,
   login,
 }
+
+
+
+
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+
+  // validate user input
+  if (!username || !password) {
+    return res.status(400).send('Missing required fields');
+  }
+  if (!isValidPassword(password)) {
+    return res.status(400).send('Password must be at least 8 characters long');
+  }
+
+  // check if user already exists in database
+  const existingUser = await user.findOne({ where: { name } });
+  if (existingUser) {
+    return res.status(409).send('User with this email already exists');
+  }
+
+  // create new user object
+  const newUser = {
+    name,
+    password: await bcrypt.hash(password, 10) // hash password using bcrypt
+  };
+
+  // save user to database
+  try {
+    const createdUser = await User.create(newUser);
+    return res.status(201).send('User created successfully');
+  } catch (error) {
+    console.error('Error creating user:', error);
+    return res.status(500).send('Error creating user');
+  }
+});
+
+function isValidPassword(password) {
+  // check if password is at least 8 characters long
+  return password.length >= 8;
+}
+
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
+});

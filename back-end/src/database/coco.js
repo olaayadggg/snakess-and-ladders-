@@ -1,6 +1,7 @@
 import { sequelize ,DataTypes} from './config.js';
 
 
+
 const cocoSchema = sequelize.define('coco', {
     id: {
         type: DataTypes.INTEGER,
