@@ -1,3 +1,4 @@
+import { io } from './landingPage.js';
 let gameId=null
 let current_turn=0
 let lastMove = 0
@@ -7,8 +8,9 @@ const users = [ [1000, 21],
 ];
 
 
- const end =()=>{
+ const end =(gameId)=>{
  //    emit to users (declare winners) , end game  , change status of game
+     io.emit("win",gameId)
  };
 
 const checkRemainingUsers = ()=>{
@@ -34,13 +36,13 @@ setInterval(()=>{
 const movePieces = ()=>{
         const diceNumber = dice();
         users[current_turn][1]+=diceNumber
-        checkWinner();
+        checkWinner(gameId);
         checkRemainingUsers();
         current_turn=(current_turn+1)%users.length
 };
 
-const checkWinner = ()=>{
+const checkWinner = (gameId)=>{
     if (users[current_turn][1] === 100) {
-        end();
+        end(gameId);
     }
 };
