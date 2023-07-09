@@ -14,12 +14,6 @@ const userSchema = sequelize.define('user', {
         primaryKey: true,
         autoIncrement: true
     },
-    age: {
-        type: DataTypes.INTEGER
-    },
-    email: {
-        type: DataTypes.STRING(50)
-    },
     name: {
         type: DataTypes.STRING(50)
     },
