@@ -1,6 +1,6 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
-
+// fyf
 
 const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Ahmedkhali12345@#$%', {
     host: 'localhost',
