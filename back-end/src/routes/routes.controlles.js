@@ -1,6 +1,6 @@
 import express from 'express';
 import pkg from 'sequelize';
-const { Sequelize, DataTypes , Model } = pkg;
+const { Sequelize, DataTypes, Model } = pkg;
 import bodyParser from 'body-parser';
 
 const app = express();
@@ -74,6 +74,9 @@ app.get('/game', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
 
 app.post('/adduser', async (req, res) => {
     const { name, password } = req.body;
@@ -166,6 +169,33 @@ app.post('/game', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+// app.post('/addElement', async (req, res) => {
+//     const { gameID, from, to } = req.body;
+//     try {
+//         const element = await elements.create({
+//             gameID,
+//             from,
+//             to,
+//             createdAt: new Date(),
+//             updatedAt: new Date(),
+//         });
+//         res.send('Element added');
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+
+// app.get('/element', async (req, res) => {
+//     try {
+//         const element = await elements.findAll();
+//         res.json(element);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+
 
 // Sync Sequelize models and start the server
 sequelize.sync().then(() => {
