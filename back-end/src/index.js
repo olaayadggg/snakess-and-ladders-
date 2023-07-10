@@ -1,13 +1,19 @@
-import { Sequelize } from "sequelize";
-import userSchema from "./models/user.js";
-import elementSchema from "./models/element.js";
-import boardSchema from "./models/board.js";
-import gameSchema from "./models/game.js";
+import  express  from "express"
 
-sequelize.sync().then(() => {
-    console.log('Models synchronized with the database');
-  })
-  .catch((err) => {
-    console.error('Error synchronizing models:', err);
-  });
+const app = express()
+import userRouters from "./routes/routes.controlles.js"
+app.use(express.json())
 
+
+
+app.use(userRouters)
+
+
+
+
+app.listen(3001, () => {
+  console.log('Server is running');
+});
+
+
+console.log("kjsgdvakhsl");
