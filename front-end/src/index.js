@@ -9,5 +9,5 @@ root.render( <
     <
     App / >
     <
-    /React.StrictMode> / / Add closing tag here
+    /React.StrictMode>
 );

@@ -1,9 +1,8 @@
-// styles/landingPageStyles.js
 import { makeStyles } from '@material-ui/core/styles';
 
 const landingPageStyles = makeStyles((theme) => ({
     container: {
-        // Add your custom styles here
+        maxWidth: "lg",
     },
     select: {
         marginTop: theme.spacing(2),
