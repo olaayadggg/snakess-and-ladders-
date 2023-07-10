@@ -77,7 +77,10 @@ Element.init(
 
 app.use(bodyParser.json());
 
-app.get('/users', async (req, res) => {
+// check if user is founded in database 
+
+
+app.post('/users', async (req, res) => {
     const { name } = req.query;
     try {
         const user = await User.findOne({
@@ -93,15 +96,19 @@ app.get('/users', async (req, res) => {
 });
 
 
+// return all games wi the capacity
 app.get('/game', async (req, res) => {
     try {
-        const games = await Game.findAll();
+        const games = await Game.findAll({
+            attributes: ['capacity'], // Specify the 'capacity' field to retrieve
+        });
         res.json(games);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 // adding user to database
 app.post('/adduser', async (req, res) => {
     const { name, password } = req.body;
@@ -167,6 +174,30 @@ app.get('/games/:id', async (req, res) => {
     }
 });
 
+
+
+app.put("/updateStatus/:id", async (req, res) => {
+    const userID = req.params.id;
+    const newStatus = req.body.status; // Assuming the new position value is provided in the request body
+
+    try {
+        const user = await Game.findByPk(userID);
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            await user.update({ status: newStatus });
+            res.json({ message: 'Position updated successfully' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
 app.get('/gameUser/:id', async (req, res) => {
     const gameId = req.params.id;
     try {
@@ -181,8 +212,37 @@ app.get('/gameUser/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+app.put("/updatePositions/:id", async (req, res) => {
+    const userID = req.params.id;
+    const newPosition = req.body.position; // Assuming the new position value is provided in the request body
 
-app.post('/game', async (req, res) => {
+    try {
+        const user = await GameUser.findByPk(userID);
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            await user.update({ position: newPosition });
+            res.json({ message: 'Position updated successfully' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+app.get('/findAllGameUsers/:id', async (req, res) => {
+    const gameId = req.params.id;
+    try {
+        const gameUser = await GameUser.findAll();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/game/joinGame', async (req, res) => {
     const { boardID, noOfPlayers, status, capacity, currentUser, lastMove } = req.body;
     try {
         const game = await Game.create({

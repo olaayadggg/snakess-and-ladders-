@@ -1,4 +1,4 @@
-import { sequelize ,DataTypes} from '../models/config.js';
+import { sequelize, DataTypes } from '../models/config.js';
 
 
 
@@ -17,7 +17,7 @@ const cocoSchema = sequelize.define('coco', {
 });
 sequelize.sync().then(() => {
     console.log('Models synchronized with the database');
-  })
-  .catch((err) => {
-    console.error('Error synchronizing models:', err);
-  });
+})
+    .catch((err) => {
+        console.error('Error synchronizing models:', err);
+    });
