@@ -2,6 +2,7 @@ import express from 'express';
 import pkg from 'sequelize';
 const { Sequelize, DataTypes, Model } = pkg;
 import bodyParser from 'body-parser';
+import bcrypt from 'bcrypt';
 
 const app = express();
 
