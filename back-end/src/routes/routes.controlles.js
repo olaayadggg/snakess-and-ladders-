@@ -28,6 +28,7 @@ class Game extends Model { }
 Game.init(
     {
         boardID: DataTypes.INTEGER,
+        noOfPlayers: DataTypes.INTEGER,
         status: DataTypes.STRING,
         capacity: DataTypes.INTEGER,
         currentUser: DataTypes.STRING,
@@ -50,6 +51,18 @@ GameUser.init(
     { sequelize, modelName: 'gameUser' }
 );
 
+class Element extends Model { } // Renamed the model to 'Element'
+Element.init(
+    {
+        gameid: DataTypes.INTEGER,
+        from: DataTypes.INTEGER,
+        to: DataTypes.INTEGER,
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
+    },
+    { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
+);
+
 app.use(bodyParser.json());
 
 // Define routes
@@ -63,20 +76,15 @@ app.get('/users', async (req, res) => {
     }
 });
 
-
-
 app.get('/game', async (req, res) => {
     try {
-        const users = await Game.findAll();
-        res.json(users);
+        const games = await Game.findAll();
+        res.json(games);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-
-
 
 app.post('/adduser', async (req, res) => {
     const { name, password } = req.body;
@@ -152,10 +160,11 @@ app.get('/gameUser/:id', async (req, res) => {
 });
 
 app.post('/game', async (req, res) => {
-    const { boardID, status, capacity, currentUser, lastMove } = req.body;
+    const { boardID, noOfPlayers, status, capacity, currentUser, lastMove } = req.body;
     try {
         const game = await Game.create({
             boardID,
+            noOfPlayers,
             status,
             capacity,
             currentUser,
@@ -169,34 +178,51 @@ app.post('/game', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-// app.post('/addElement', async (req, res) => {
-//     const { gameID, from, to } = req.body;
-//     try {
-//         const element = await elements.create({
-//             gameID,
-//             from,
-//             to,
-//             createdAt: new Date(),
-//             updatedAt: new Date(),
-//         });
-//         res.send('Element added');
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
 
-// app.get('/element', async (req, res) => {
-//     try {
-//         const element = await elements.findAll();
-//         res.json(element);
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
+app.post('/addElement', async (req, res) => {
+    const { gameID, from, to } = req.body;
+    try {
+        const element = await Element.create({
+            gameid: gameID, // Renamed to 'gameid'
+            from,
+            to,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        });
+        res.send('Element added');
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
+app.get('/element', async (req, res) => {
+    try {
+        const elements = await Element.findAll(); // Updated to use the correct model name 'Element'
+        res.json(elements); // Updated variable name from 'element' to 'elements'
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.delete('/gameuser/:id', async (req, res) => {
+    const gameUserId = req.params.id;
+    try {
+        const deletedGameUser = await GameUser.destroy({
+            where: { id: gameUserId },
+        });
+        if (deletedGameUser === 0) {
+            res.status(404).json({ error: 'Game user not found' });
+        } else {
+            res.send('Game user deleted');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 // Sync Sequelize models and start the server
 sequelize.sync().then(() => {
     app.listen(3001, () => {
