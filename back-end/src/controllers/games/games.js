@@ -8,10 +8,10 @@ const users = [ [1000, 21],
 ];
 
 
- const end =(gameId)=>{
- //    emit to users (declare winners) , end game  , change status of game
-     io.emit("win",gameId)
- };
+const end =(gameId)=>{
+    //    emit to users (declare winners) , end game  , change status of game
+    io.emit("win",gameId)
+};
 
 const checkRemainingUsers = ()=>{
     users.length===1?end():0;
@@ -27,18 +27,19 @@ const kickUser=(index)=>{
 //  delete from database
 }
 setInterval(()=>{
- lastMove>=20?kickUser(current_turn):0
+        lastMove>=20?kickUser(current_turn):0
     },20000
 )
 
 
 
 const movePieces = ()=>{
-        const diceNumber = dice();
-        users[current_turn][1]+=diceNumber
-        checkWinner(gameId);
-        checkRemainingUsers();
-        current_turn=(current_turn+1)%users.length
+    const diceNumber = dice();
+    users[current_turn][1]+=diceNumber
+    checkWinner(gameId);
+    checkRemainingUsers();
+    current_turn=(current_turn+1)%users.length
+//
 };
 
 const checkWinner = (gameId)=>{

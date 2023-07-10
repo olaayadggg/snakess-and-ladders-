@@ -3,12 +3,12 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes, Model } = pkg;
 import bodyParser from 'body-parser';
 
+const router = express.Router();
 const app = express();
 
 // Sequelize configuration
-const sequelize = new Sequelize('snakes-and-ladders', 'root3', '123456789', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Ahmedkhali12345@#$%', {
     host: 'localhost',
-    port: 8081,
     dialect: 'mysql',
 });
 
@@ -93,15 +93,17 @@ app.get('/users', async (req, res) => {
 });
 
 
+
 app.get('/game', async (req, res) => {
     try {
-        const games = await Game.findAll();
+        const games = await Game.findAll({ where: { status: 'pending' } });
         res.json(games);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 // adding user to database
 app.post('/adduser', async (req, res) => {
     const { name, password } = req.body;
