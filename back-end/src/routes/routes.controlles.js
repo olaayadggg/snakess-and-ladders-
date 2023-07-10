@@ -4,7 +4,7 @@ const { Sequelize, DataTypes, Model } = pkg;
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import game from "../models/game.js";
-
+//
 const app = express();
 
 
