@@ -64,11 +64,11 @@ Element.init(
 );
 
 
-class board  extends Model { } // Renamed the model to 'Element'
+class board extends Model { } // Renamed the model to 'Element'
 Element.init(
     {
         name: DataTypes.STRING(50),
-        Image:DataTypes.STRING(255),
+        Image: DataTypes.STRING(255),
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
@@ -77,16 +77,21 @@ Element.init(
 
 app.use(bodyParser.json());
 
-// Define routes
 app.get('/users', async (req, res) => {
+    const { name } = req.query;
     try {
-        const users = await User.findAll();
-        res.json(users);
+        const user = await User.findOne({
+            where: { name },
+            attributes: ['name'],
+        });
+        const isNameExists = !!user;
+        res.json(isNameExists);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 app.get('/game', async (req, res) => {
     try {
@@ -97,17 +102,23 @@ app.get('/game', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
+// adding user to database
 app.post('/adduser', async (req, res) => {
     const { name, password } = req.body;
     try {
-        const user = await User.create({ name, password, createdAt: new Date(), updatedAt: new Date() });
-        res.send('User added' , );
+        const existingUser = await User.findOne({ where: { name } });
+        if (existingUser) {
+            res.json("user already exist ");
+        } else {
+            const user = await User.create({ name, password, createdAt: new Date(), updatedAt: new Date() });
+            res.json({ id: user.id });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 app.post('/gameuser', async (req, res) => {
     const { userid, gameid, position } = req.body;
