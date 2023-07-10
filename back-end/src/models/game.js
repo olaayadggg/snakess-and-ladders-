@@ -7,6 +7,10 @@ const gameSchema = sequelize.define('game', {
         primaryKey: true,
         autoIncrement: true
     },
+    noOfPlayers: {
+        type: DataTypes.INTEGER
+    }
+    ,
     boardID: {
         type: DataTypes.INTEGER
     },

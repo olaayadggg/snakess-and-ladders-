@@ -63,7 +63,17 @@ Element.init(
     { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
 );
 
-
+class Board extends Model { }
+Board.init(
+    {
+        I: DataTypes.INTEGER,
+        gameid: DataTypes.INTEGER,
+        position: DataTypes.INTEGER,
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
+    },
+    { sequelize, modelName: 'gameUser' }
+);
 class board extends Model { } // Renamed the model to 'Element'
 Element.init(
     {
@@ -169,7 +179,7 @@ app.get('/games/:id', async (req, res) => {
     }
 });
 
-app.get('/gameUser/:id', async (req, res) => {
+app.get('/UsersInGame/:id', async (req, res) => {
     const gameId = req.params.id;
     try {
         const gameUser = await GameUser.findByPk(gameId);
@@ -220,6 +230,7 @@ app.post('/addElement', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 app.get('/element', async (req, res) => {
