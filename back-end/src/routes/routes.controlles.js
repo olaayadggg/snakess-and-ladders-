@@ -83,7 +83,7 @@ route.use(bodyParser.json());
 // check if user is founded in database 
 
 
-route.post('/users', async (req, res) => {
+route.post('/login', async (req, res) => {
     const { name } = req.query;
     try {
         const user = await User.findOne({
