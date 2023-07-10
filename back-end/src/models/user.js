@@ -1,15 +1,7 @@
-import { INTEGER, Sequelize } from 'sequelize';
-import { Sequelize, Model, DataTypes } from 'sequelize';
+import { sequelize ,DataTypes} from '../models/config.js';
 
 
-
-
-const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
-    host: 'localhost',
-    dialect: 'mysql '
-});
-
-const userSchema = connection.define('user', {
+const userSchema = sequelize.define('user', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -22,7 +14,6 @@ const userSchema = connection.define('user', {
         type: DataTypes.STRING(100)
     }
 });
-connection.sync()
-
+export default userSchema;
 
 
