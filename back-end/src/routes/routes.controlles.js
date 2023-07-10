@@ -130,7 +130,7 @@ route.get('/game/capacity/:id', async (req, res) => {
 });
 
 // adding user to database
-route.post('/adduser', async (req, res) => {
+route.post('/register', async (req, res) => {
     const { name, password } = req.body;
     try {
         const existingUser = await User.findOne({ where: { name } });
