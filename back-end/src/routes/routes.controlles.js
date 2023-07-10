@@ -63,6 +63,18 @@ Element.init(
     { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
 );
 
+
+class board  extends Model { } // Renamed the model to 'Element'
+Element.init(
+    {
+        name: DataTypes.STRING(50),
+        Image:DataTypes.STRING(255),
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
+    },
+    { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
+);
+
 app.use(bodyParser.json());
 
 // Define routes
@@ -90,7 +102,7 @@ app.post('/adduser', async (req, res) => {
     const { name, password } = req.body;
     try {
         const user = await User.create({ name, password, createdAt: new Date(), updatedAt: new Date() });
-        res.send('User added');
+        res.send('User added' , );
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
