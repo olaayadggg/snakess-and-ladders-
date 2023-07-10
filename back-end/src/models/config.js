@@ -2,7 +2,7 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 // fyf
 
-const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Ahmedkhali12345@#$%', {
     host: 'localhost',
     dialect: 'mysql'
 });
@@ -113,12 +113,17 @@ const User = sequelize.define('user', {
 });
 
 
+
+
+boardSchema.hasMany(gameSchema, {
+    foreignKey: 'BoardId'
+});
+gameSchema.belongsTo(boardSchema);
 sequelize.sync().then(() => {
     console.log('Models synchronized with the database');
 })
-    .catch((err) => {
+.catch((err) => {
         console.error('Error synchronizing models:', err);
-    });
 
 boardSchema.hasMany(gameSchema, {
     foreignKey: 'BoardId'
