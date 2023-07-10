@@ -3,6 +3,7 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes, Model } = pkg;
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
+import game from "../models/game.js";
 
 const app = express();
 
@@ -10,8 +11,9 @@ const app = express();
 const route = express.Router();
 
 // Sequelize configuration
-const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root3', '123456789', {
     host: 'localhost',
+    port: 8081,
     dialect: 'mysql',
 });
 
@@ -75,8 +77,16 @@ board.init(
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
-    { sequelize, modelName: 'board' } // Updated modelName to 'board'
+    { sequelize, modelName: 'board' } // Updated modelName to 'elements'
 );
+Game.belongsTo(board, { foreignKey: 'boardID' });
+board.hasMany(Game, { foreignKey: 'boardID' });
+Element.belongsTo(Game,{ foreignKey: 'boardID' });
+Game.hasMany(Element,{ foreignKey: 'boardID' });
+GameUser.belongsTo(Game,{ foreignKey: 'boardID' });
+Game.hasMany(GameUser,{ foreignKey: 'boardID' });
+
+
 
 route.use(bodyParser.json());
 
