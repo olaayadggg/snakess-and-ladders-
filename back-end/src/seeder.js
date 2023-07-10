@@ -4,7 +4,7 @@ import mysql from 'mysql2/promise';
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'amr123456',
+    password: '1234567890!@#$%^&*(',
     database: 'snakes-and-ladders'
 });
 
