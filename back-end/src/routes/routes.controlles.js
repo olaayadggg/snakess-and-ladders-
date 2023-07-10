@@ -3,12 +3,15 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes, Model } = pkg;
 import bodyParser from 'body-parser';
 
-const router = express.Router();
 const app = express();
 
+
+const route = express.Router();
+
 // Sequelize configuration
-const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Ahmedkhali12345@#$%', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root3', '123456789', {
     host: 'localhost',
+    port: 8081,
     dialect: 'mysql',
 });
 
@@ -63,19 +66,9 @@ Element.init(
     { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
 );
 
-class Board extends Model { }
-Board.init(
-    {
-        I: DataTypes.INTEGER,
-        gameid: DataTypes.INTEGER,
-        position: DataTypes.INTEGER,
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
-    },
-    { sequelize, modelName: 'gameUser' }
-);
+
 class board extends Model { } // Renamed the model to 'Element'
-Element.init(
+board.init(
     {
         name: DataTypes.STRING(50),
         Image: DataTypes.STRING(255),
@@ -85,9 +78,12 @@ Element.init(
     { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
 );
 
-app.use(bodyParser.json());
+route.use(bodyParser.json());
 
-app.get('/users', async (req, res) => {
+// check if user is founded in database 
+
+
+route.post('/login', async (req, res) => {
     const { name } = req.query;
     try {
         const user = await User.findOne({
@@ -103,10 +99,11 @@ app.get('/users', async (req, res) => {
 });
 
 
+// return all games wi the
 
-app.get('/game', async (req, res) => {
+route.get('/game', async (req, res) => {
     try {
-        const games = await Game.findAll({ where: { status: 'pending' } });
+        const games = await Game.findAll();
         res.json(games);
     } catch (err) {
         console.error(err);
@@ -114,8 +111,26 @@ app.get('/game', async (req, res) => {
     }
 });
 
+
+route.get('/game/capacity/:id', async (req, res) => {
+    const gameid = req.params.id;
+    try {
+        const game = await Game.findByPk(gameid, {
+            attributes: ['capacity'], // Specify the 'id' and 'capacity' fields to retrieve
+        });
+        if (!game) {
+            res.status(404).json({ error: 'Game not found' });
+        } else {
+            res.json(game);
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 // adding user to database
-app.post('/adduser', async (req, res) => {
+route.post('/register', async (req, res) => {
     const { name, password } = req.body;
     try {
         const existingUser = await User.findOne({ where: { name } });
@@ -132,7 +147,7 @@ app.post('/adduser', async (req, res) => {
 });
 
 
-app.post('/gameuser', async (req, res) => {
+route.post('/gameuser', async (req, res) => {
     const { userid, gameid, position } = req.body;
     try {
         const gameUser = await GameUser.create({
@@ -149,7 +164,7 @@ app.post('/gameuser', async (req, res) => {
     }
 });
 
-app.get('/users/:id', async (req, res) => {
+route.get('/users/:id', async (req, res) => {
     const userId = req.params.id;
     try {
         const user = await User.findByPk(userId);
@@ -164,7 +179,7 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
-app.get('/games/:id', async (req, res) => {
+route.get('/games/:id', async (req, res) => {
     const gameId = req.params.id;
     try {
         const game = await Game.findByPk(gameId);
@@ -179,7 +194,31 @@ app.get('/games/:id', async (req, res) => {
     }
 });
 
-app.get('/UsersInGame/:id', async (req, res) => {
+
+
+route.put("/updateStatus/:id", async (req, res) => {
+    const userID = req.params.id;
+    const newStatus = req.body.status; // Assuming the new position value is provided in the request body
+
+    try {
+        const user = await Game.findByPk(userID);
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            await user.update({ status: newStatus });
+            res.json({ message: 'Position updated successfully' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
+route.get('/gameUser/:id', async (req, res) => {
     const gameId = req.params.id;
     try {
         const gameUser = await GameUser.findByPk(gameId);
@@ -193,8 +232,37 @@ app.get('/UsersInGame/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+route.put("/updatePositions/:id", async (req, res) => {
+    const userID = req.params.id;
+    const newPosition = req.body.position; // Assuming the new position value is provided in the request body
 
-app.post('/game', async (req, res) => {
+    try {
+        const user = await GameUser.findByPk(userID);
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            await user.update({ position: newPosition });
+            res.json({ message: 'Position updated successfully' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+route.get('/findAllGameUsers/:id', async (req, res) => {
+    const gameId = req.params.id;
+    try {
+        const gameUser = await GameUser.findAll();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+route.post('/game/joinGame', async (req, res) => {
     const { boardID, noOfPlayers, status, capacity, currentUser, lastMove } = req.body;
     try {
         const game = await Game.create({
@@ -214,7 +282,7 @@ app.post('/game', async (req, res) => {
     }
 });
 
-app.post('/addElement', async (req, res) => {
+route.post('/addElement', async (req, res) => {
     const { gameID, from, to } = req.body;
     try {
         const element = await Element.create({
@@ -232,8 +300,7 @@ app.post('/addElement', async (req, res) => {
 });
 
 
-
-app.get('/element', async (req, res) => {
+route.get('/element', async (req, res) => {
     try {
         const elements = await Element.findAll(); // Updated to use the correct model name 'Element'
         res.json(elements); // Updated variable name from 'element' to 'elements'
@@ -243,7 +310,7 @@ app.get('/element', async (req, res) => {
     }
 });
 
-app.delete('/gameuser/:id', async (req, res) => {
+route.delete('/gameuser/:id', async (req, res) => {
     const gameUserId = req.params.id;
     try {
         const deletedGameUser = await GameUser.destroy({
@@ -260,8 +327,8 @@ app.delete('/gameuser/:id', async (req, res) => {
     }
 });
 // Sync Sequelize models and start the server
-sequelize.sync().then(() => {
-    app.listen(3001, () => {
-        console.log('Server is running');
-    });
-});
+sequelize.sync()
+
+
+
+export default route;
