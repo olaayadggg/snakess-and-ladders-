@@ -1,6 +1,7 @@
 import express from 'express';
 import pkg from 'sequelize';
 const { Sequelize, DataTypes, Model } = pkg;
+import bcrypt from 'bcrypt';
 import bodyParser from 'body-parser';
 
 const app = express();
@@ -75,7 +76,7 @@ board.init(
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
-    { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
+    { sequelize, modelName: 'board' } // Updated modelName to 'elements'
 );
 
 route.use(bodyParser.json());
@@ -137,7 +138,8 @@ route.post('/register', async (req, res) => {
         if (existingUser) {
             res.json("user already exist ");
         } else {
-            const user = await User.create({ name, password, createdAt: new Date(), updatedAt: new Date() });
+            const hashedPassword = await bcrypt.hash(password, 10); // Hash the password using bcrypt
+            const user = await User.create({ name, password: hashedPassword, createdAt: new Date(), updatedAt: new Date() });
             res.json({ id: user.id });
         }
     } catch (err) {
@@ -145,7 +147,6 @@ route.post('/register', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 route.post('/gameuser', async (req, res) => {
     const { userid, gameid, position } = req.body;
@@ -171,8 +172,8 @@ route.get('/users/:id', async (req, res) => {
         if (!user) {
             res.status(404).json({ error: 'User not found' });
         } else {
-            res.json(user);
-        }
+            res.json({ id: user.id, name: user.name });
+        }   
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
