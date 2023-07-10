@@ -9,9 +9,8 @@ const app = express();
 const route = express.Router();
 
 // Sequelize configuration
-const sequelize = new Sequelize('snakes-and-ladders', 'root3', '123456789', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
     host: 'localhost',
-    port: 8081,
     dialect: 'mysql',
 });
 
@@ -75,7 +74,7 @@ board.init(
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
-    { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
+    { sequelize, modelName: 'board' } // Updated modelName to 'board'
 );
 
 route.use(bodyParser.json());
@@ -133,18 +132,19 @@ route.get('/game/capacity/:id', async (req, res) => {
 route.post('/register', async (req, res) => {
     const { name, password } = req.body;
     try {
-        const existingUser = await User.findOne({ where: { name } });
-        if (existingUser) {
-            res.json("user already exist ");
-        } else {
-            const user = await User.create({ name, password, createdAt: new Date(), updatedAt: new Date() });
-            res.json({ id: user.id });
-        }
+      const existingUser = await User.findOne({ where: { name } });
+      if (existingUser) {
+        res.json("user already exist ");
+      } else {
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password using bcrypt
+        const user = await User.create({ name, password: hashedPassword, createdAt: new Date(), updatedAt: new Date() });
+        res.json({ id: user.id });
+      }
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-});
+  });
 
 
 route.post('/gameuser', async (req, res) => {

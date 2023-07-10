@@ -2,7 +2,7 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 // fyf
 
-const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Ahmedkhali12345@#$%', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
     host: 'localhost',
     dialect: 'mysql'
 });
@@ -111,8 +111,6 @@ const User = sequelize.define('user', {
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     }
 });
-
-
 
 
 sequelize.sync().then(() => {
