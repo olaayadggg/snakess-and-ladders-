@@ -1,31 +1,23 @@
-// import { Sequelize } from "sequelize";
-// import userSchema from "./models/user.js";
-// import elementSchema from "./models/element.js";
-// import boardSchema from "./models/board.js";
-// import gameSchema from "./models/game.js";
-//
-// Sequelize.sync().then(() => {
-//     console.log('Models synchronized with the database');
-//   })
-//   .catch((err) => {
-//     console.error('Error synchronizing models:', err);
-//   });
-//
+import  express  from "express"
+import seedData from './seeder.js'
 
-    import express from "express";
+const app = express()
+import userRouters from "./routes/routes.controlles.js"
+app.use(express.json())
 
-    const app = express();
 
-    import userRoutes from '../src/routes/routes.controlles.js'; // Adjust the path based on your file structure
 
-    app.use(express.json());
+seedData()
+app.use(userRouters)
 
-    // Use the gameRouter middleware for the /game route
-    app.use(userRoutes);
 
-    // ... other routes and middleware ...
 
-    app.listen(3001, () => {
-        console.log('Server is running on port 3001');
-    });
 
+
+
+app.listen(8000, () => {
+  console.log('Server is running');
+});
+
+
+console.log("its working ");

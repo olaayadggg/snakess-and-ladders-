@@ -3,17 +3,16 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes, Model } = pkg;
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
-import game from "../models/game.js";
-//
+// import game from "../models/game.js";
+
 const app = express();
 
 
 const route = express.Router();
 
 // Sequelize configuration
-const sequelize = new Sequelize('snakes-and-ladders', 'root3', '123456789', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
     host: 'localhost',
-    port: 8081,
     dialect: 'mysql',
 });
 
@@ -26,7 +25,7 @@ User.init(
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
-    { sequelize, modelName: 'user' }
+    { sequelize, modelName: 'users' }
 );
 
 class Game extends Model { }
@@ -44,8 +43,8 @@ Game.init(
     { sequelize, modelName: 'game' }
 );
 
-class GameUser extends Model { }
-GameUser.init(
+class GameUsers extends Model { }
+GameUsers.init(
     {
         userid: DataTypes.INTEGER,
         gameid: DataTypes.INTEGER,
@@ -53,13 +52,13 @@ GameUser.init(
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
-    { sequelize, modelName: 'gameUser' }
+    { sequelize, modelName: 'gameUsers' }
 );
 
 class Element extends Model { } // Renamed the model to 'Element'
 Element.init(
     {
-        gameid: DataTypes.INTEGER,
+        boardID: DataTypes.INTEGER,
         from: DataTypes.INTEGER,
         to: DataTypes.INTEGER,
         createdAt: DataTypes.DATE,
@@ -77,17 +76,15 @@ board.init(
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
-    { sequelize, modelName: 'board' } // Updated modelName to 'elements'
+    { sequelize, modelName: 'board' } // Updated modelName to 'board'
 );
+
 Game.belongsTo(board, { foreignKey: 'boardID' });
 board.hasMany(Game, { foreignKey: 'boardID' });
-Element.belongsTo(Game,{ foreignKey: 'boardID' });
-Game.hasMany(Element,{ foreignKey: 'boardID' });
-GameUser.belongsTo(Game,{ foreignKey: 'boardID' });
-Game.hasMany(GameUser,{ foreignKey: 'boardID' });
-
-
-
+Element.belongsTo(board,{ foreignKey: 'boardID' });
+board.hasMany(Element,{ foreignKey: 'boardID' });
+GameUsers.belongsTo(Game,{ foreignKey: 'gameid' });
+Game.hasMany(GameUsers,{ foreignKey: 'gameid' });
 route.use(bodyParser.json());
 
 // check if user is founded in database 
