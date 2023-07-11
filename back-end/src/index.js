@@ -16,12 +16,12 @@
 
     const app = express();
 
-    import gameRouter from './routes/routes.controlles'; // Adjust the path based on your file structure
+    import userRoutes from '../src/routes/routes.controlles.js'; // Adjust the path based on your file structure
 
     app.use(express.json());
 
     // Use the gameRouter middleware for the /game route
-    app.use('/game', gameRouter);
+    app.use(userRoutes);
 
     // ... other routes and middleware ...
 
