@@ -97,6 +97,7 @@ route.post('/login', async (req, res) => {
             where: { name },
             attributes: ['name'],
         });
+        console.log(user.password)
         const isNameExists = !!user;
         res.json(isNameExists);
     } catch (err) {
