@@ -1,0 +1,12 @@
+.img-1 {
+    background-image: url('https://imgur.com/a005G8C.png');
+}
+
+/*
+     It is rather a simplistic approach to show a side of a dice. Created six images, each representing a number. The CSS class sets it as the background for the HTML element.
+  See below, the HTML element matches height and width of the element to the image's width and height.
+  */
+.dice {
+    width: 100px;
+    height: 100px;
+}
