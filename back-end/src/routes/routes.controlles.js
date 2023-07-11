@@ -91,20 +91,34 @@ route.use(bodyParser.json());
 
 
 route.post('/login', async (req, res) => {
-    const { name } = req.query;
+    const { name, password } = req.body;
+    let PasswordIsRight;
+
     try {
+        if (!name) {
+            throw new Error('Missing "name" parameter');
+        }
+
         const user = await User.findOne({
             where: { name },
-            attributes: ['name'],
+            attributes: ['name', 'password'],
         });
-        console.log(user.password)
-        const isNameExists = !!user;
-        res.json(isNameExists);
+
+        bcrypt.compare(password, user.password, (err, result) => {
+            PasswordIsRight = result;
+            if (!user) {
+                res.json({ exists: false });
+            } else {
+                res.json({ PasswordIsRight });
+            }
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 
 // return all games wi the
@@ -159,7 +173,7 @@ route.post('/register', async (req, res) => {
 route.post('/gameuser', async (req, res) => {
     const { userid, gameid, position } = req.body;
     try {
-        const gameUser = await GameUser.create({
+        const gameUser = await GameUsers.create({
             userid,
             gameid,
             position,
@@ -230,7 +244,7 @@ route.put("/updateStatus/:id", async (req, res) => {
 route.get('/gameUser/:id', async (req, res) => {
     const gameId = req.params.id;
     try {
-        const gameUser = await GameUser.findByPk(gameId);
+        const gameUser = await GameUsers.findByPk(gameId);
         if (!gameUser) {
             res.status(404).json({ error: 'Game not found' });
         } else {
