@@ -98,7 +98,6 @@ route.post('/login', async (req, res) => {
         if (!name) {
             throw new Error('Missing "name" parameter');
         }
-
         const user = await User.findOne({
             where: { name },
             attributes: ['name', 'password'],
