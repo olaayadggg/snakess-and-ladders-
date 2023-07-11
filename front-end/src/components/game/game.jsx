@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './game.module.css';
+// import PropTypes from 'prop-types';
+// import styles from './game.module.css';
 import img from '../../istockphoto-455302535-612x612.jpg'
 import axios from 'axios';
 
