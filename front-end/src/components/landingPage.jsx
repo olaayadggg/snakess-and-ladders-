@@ -66,9 +66,7 @@ const LandingPage = () => {
   }, [joinedPlayers, selectedPlayers, showStart]);
 
   const redirectToBoard = () => {
-    // Implement your navigation logic here
-    // Example:
-    // window.location.href = "/board";
+    
   };
 
   return (
