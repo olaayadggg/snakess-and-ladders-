@@ -1,19 +1,21 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import landingPage from './components/landingPage'
-import BasicForm from '../src/components/BasicForm'
-// import img from '../src/istockphoto-455302535-612x612.jpg';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LandingPage from './components/landingPage';
+import BasicForm from './components/BasicForm';
+import SignIn from './components/signIn';
+import Game from './components/board';
 
-export default function App() {
+function App() {
   return (
-    <BrowserRouter>
-      <Switch>
-        
-        <Route exact path='/' component={landingPage} />
-      </Switch>
-    </BrowserRouter>
-    // <div>
-    //   <img style={{ width: '100%', height: '100%' }} src={img} alt="" />
-    // </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<BasicForm />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/game" element={<Game />} />
+      </Routes>
+    </Router>
   );
 }
+
+export default App;
