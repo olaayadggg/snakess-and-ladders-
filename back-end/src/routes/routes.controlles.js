@@ -11,7 +11,7 @@ const app = express();
 const route = express.Router();
 
 // Sequelize configuration
-const sequelize = new Sequelize('snakes-and-ladders', 'root', 'Ahmedkhali12345@#$%', {
+const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
     host: 'localhost',
     dialect: 'mysql',
 });
