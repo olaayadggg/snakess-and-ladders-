@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+}
+
+/* raise Button */
+.raise:hover,
+.raise:focus {
+  box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+  transform: translateY(-0.25em);
+}
+
+.raise {
+  color: rgb(104, 66, 255);
+  transition: 0.25s;
+  background: none;
+  border: 2px solid;
+  font: inherit;
+  line-height: 1;
+  /* margin: 0.5em; */
+  padding: 1em 2em;
+
+  &:hover,
+  &:focus {
+    border-color: var(--hover);
+    color: #fff;
+  }
+}
+
+/* ============================= */
+
+/* input shadwing  */
+
+.field input,
+form button {
+  height: 50px;
+  width: 100%;
+  outline: none;
+  font-size: 19px;
+  color: #868686;
+  padding: 0 15px;
+  border-radius: 0 5px 5px 0;
+  border: 1px solid #444;
+  caret-color: rgb(104, 66, 255);
+  background: linear-gradient(#333, #222);
+}
+
+input:focus {
+  color: rgb(104, 66, 255);
+  /* box-shadow: 0 0 5px rgba(0, 255, 0, .2),
+      inset 0 0 5px rgba(0, 255, 0, .1); */
+  background: linear-gradient(#333933, #222922);
+  animation: glow .8s ease-out infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    border-color: rgb(104, 66, 255);
+    /* box-shadow: 0 0 5px rgba(0, 255, 0, .2),
+          inset 0 0 5px rgba(0, 0, 0, .1); */
+  }
+
+  100% {
+    border-color: rgb(159, 142, 224);
+    box-shadow: 0 0 20px rgb(100, 69, 224),
+      inset 0 0 10px rgb(100, 66, 237);
+  }
+}
+
+/* ============================= */
+.glowing {
+  color: rgb(104, 66, 255);
+  box-shadow: 0 0 5px rgba(0, 255, 0, .2),
+    inset 0 0 5px rgba(0, 255, 0, .1);
+  background: linear-gradient(#333933, #222922);
+  animation: glow .7s ease-out infinite alternate;
+}
