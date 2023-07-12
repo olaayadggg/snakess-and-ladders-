@@ -1,23 +1,14 @@
-import  express  from "express"
-import seedData from './seeder.js'
-
-const app = express()
-import userRouters from "./routes/routes.controlles.js"
-app.use(express.json())
+import express from "express";
+import route from "./routes/routes.controlles.js";
 
 
+const app = express();
+app.use(express.json());
 
-seedData()
-app.use(userRouters)
+app.use(route);
 
-
-
-
-
-
-app.listen(8000, () => {
+app.listen(3001, () => {
   console.log('Server is running');
 });
 
-
-console.log("its working ");
+console.log("it's working");

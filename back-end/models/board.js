@@ -1,19 +1,24 @@
+
 'use strict';
-import seq from ('sequelize');
-const {
-  Model
-} = seq
-module.exports = (sequelize, DataTypes) => {
-  class Board extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
+import seq from 'sequelize';
+
+const { Model , DataTypes , Sequelize} = seq;
+const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
+  host: 'localhost',
+  dialect: 'mysql',
+});
+// Define models
+
+// Sync Sequelize models and start the server
+sequelize.sync()
+class Board extends Model {
+  static associate(models) {
+    Board.hasMany(models.Elements, {foreignKey: 'boardid',});
+    Board.hasMany(models.Game, { foreignKey: 'boardid' });
   }
+}
+
+
   Board.init({
     name: DataTypes.STRING,
     image: DataTypes.STRING
@@ -21,5 +26,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Board',
   });
-  return Board;
-};
+
+
+export default Board;

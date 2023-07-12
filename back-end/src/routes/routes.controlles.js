@@ -1,122 +1,60 @@
 import express from 'express';
 import pkg from 'sequelize';
-const { Sequelize, DataTypes, Model } = pkg;
+const { Sequelize, DataTypes, Model ,Op} = pkg;
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
-// import game from "../models/game.js";
+import Game from "../../models/game.js";
+import GameUsers from "../../models/gameusers.js";
+import User from "../../models/user.js";
+import Elements  from "../../models/elements.js";
+
+
+
 
 const app = express();
 
-
 const route = express.Router();
-
 // Sequelize configuration
-const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&*(', {
-    host: 'localhost',
-    dialect: 'mysql',
-});
-
-// Define models
-class User extends Model { }
-User.init(
-    {
-        name: DataTypes.STRING,
-        password: DataTypes.STRING,
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
-    },
-    { sequelize, modelName: 'users' }
-);
-
-class Game extends Model { }
-Game.init(
-    {
-        boardID: DataTypes.INTEGER,
-        noOfPlayers: DataTypes.INTEGER,
-        status: DataTypes.STRING,
-        capacity: DataTypes.INTEGER,
-        currentUser: DataTypes.STRING,
-        lastMove: DataTypes.STRING,
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
-    },
-    { sequelize, modelName: 'game' }
-);
-
-class GameUsers extends Model { }
-GameUsers.init(
-    {
-        userid: DataTypes.INTEGER,
-        gameid: DataTypes.INTEGER,
-        position: DataTypes.INTEGER,
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
-    },
-    { sequelize, modelName: 'gameUsers' }
-);
-
-class Element extends Model { } // Renamed the model to 'Element'
-Element.init(
-    {
-        boardID: DataTypes.INTEGER,
-        from: DataTypes.INTEGER,
-        to: DataTypes.INTEGER,
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
-    },
-    { sequelize, modelName: 'elements' } // Updated modelName to 'elements'
-);
 
 
-class board extends Model { } // Renamed the model to 'Element'
-board.init(
-    {
-        name: DataTypes.STRING(50),
-        Image: DataTypes.STRING(255),
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
-    },
-    { sequelize, modelName: 'board' } // Updated modelName to 'board'
-);
 
-Game.belongsTo(board, { foreignKey: 'boardID' });
-board.hasMany(Game, { foreignKey: 'boardID' });
-Element.belongsTo(board,{ foreignKey: 'boardID' });
-board.hasMany(Element,{ foreignKey: 'boardID' });
-GameUsers.belongsTo(Game,{ foreignKey: 'gameid' });
-Game.hasMany(GameUsers,{ foreignKey: 'gameid' });
 route.use(bodyParser.json());
+
 
 // check if user is founded in database
 
-
 route.post('/login', async (req, res) => {
     const { name, password } = req.body;
-    let PasswordIsRight;
 
     try {
         if (!name) {
             throw new Error('Missing "name" parameter');
         }
+
         const user = await User.findOne({
-            where: { name },
-            attributes: ['name', 'password'],
+            where: Sequelize.where(
+                Sequelize.fn('BINARY', Sequelize.col('name')),
+                { [Op.eq]: name }
+            ),
+            attributes: ['name', 'password']
         });
 
-        bcrypt.compare(password, user.password, (err, result) => {
-            PasswordIsRight = result;
-            if (!user) {
-                res.json({ exists: false });
-            } else {
-                res.json({ PasswordIsRight });
-            }
-        });
+        if (!user) {
+            res.json({ userExist: false });
+        } else {
+            bcrypt.compare(password, user.password, (err, result) => {
+                if (result) {
+                    res.json({ passwordIsRight: true });
+                } else {
+                    res.json({ passwordIsRight: false });
+                }
+            });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 
 
@@ -133,8 +71,8 @@ route.get('/game', async (req, res) => {
 });
 
 
-route.get('/game/capacity/:id', async (req, res) => {
-    const gameid = req.params.id;
+route.get('/game/capacity/:gameid', async (req, res) => {
+    const gameid = req.params.gameid;
     try {
         const game = await Game.findByPk(gameid, {
             attributes: ['capacity'], // Specify the 'id' and 'capacity' fields to retrieve
@@ -149,7 +87,7 @@ route.get('/game/capacity/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
+//
 // adding user to database
 route.post('/register', async (req, res) => {
     const { name, password } = req.body;
@@ -169,15 +107,15 @@ route.post('/register', async (req, res) => {
 });
 
 
-route.post('/gameuser', async (req, res) => {
-    const { userid, gameid, position } = req.body;
+route.post('/Creategameuser', async (req, res) => {
+    const { userid, gameid } = req.body;
     try {
         const gameUser = await GameUsers.create({
-            userid,
-            gameid,
-            position,
-            createdAt: new Date(),
+            position:0,
+            gameid:gameid,
+            userid:userid,
             updatedAt: new Date(),
+            createdAt: new Date()
         });
         res.send('User added to game');
     } catch (err) {
@@ -186,6 +124,8 @@ route.post('/gameuser', async (req, res) => {
     }
 });
 
+
+
 route.get('/users/:id', async (req, res) => {
     const userId = req.params.id;
     try {
@@ -193,22 +133,26 @@ route.get('/users/:id', async (req, res) => {
         if (!user) {
             res.status(404).json({ error: 'User not found' });
         } else {
-            res.json(user);
+            res.json({"name":user.name});
         }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+// finished until here
 
-route.get('/games/:id', async (req, res) => {
-    const gameId = req.params.id;
+
+route.put("/StartGame/:id", async (req, res) => {
+    const gameID = req.params.id;
+
     try {
-        const game = await Game.findByPk(gameId);
+        const game = await Game.findByPk(gameID);
         if (!game) {
-            res.status(404).json({ error: 'Game not found' });
+            res.status(404).json({ error: 'game not found' });
         } else {
-            res.json(game);
+            await game.update({ status: 'Started' });
+            res.json({ message: 'game started' });
         }
     } catch (err) {
         console.error(err);
@@ -217,55 +161,16 @@ route.get('/games/:id', async (req, res) => {
 });
 
 
-
-route.put("/updateStatus/:id", async (req, res) => {
-    const userID = req.params.id;
-    const newStatus = req.body.status; // Assuming the new position value is provided in the request body
-
+route.put("/updatePositions/:id/:position", async (req, res) => {
+    const id = req.params.id;
+    const newPosition = req.params.position;
     try {
-        const user = await Game.findByPk(userID);
-
-        if (!user) {
-            res.status(404).json({ error: 'User not found' });
-        } else {
-            await user.update({ status: newStatus });
-            res.json({ message: 'Position updated successfully' });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-
-
-route.get('/gameUser/:id', async (req, res) => {
-    const gameId = req.params.id;
-    try {
-        const gameUser = await GameUsers.findByPk(gameId);
+        const gameUser = await GameUsers.findByPk(id);
         if (!gameUser) {
-            res.status(404).json({ error: 'Game not found' });
+            res.status(404).json({ error: 'not in game' });
         } else {
-            res.json(gameUser);
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-route.put("/updatePositions/:id", async (req, res) => {
-    const userID = req.params.id;
-    const newPosition = req.body.position; // Assuming the new position value is provided in the request body
-
-    try {
-        const user = await GameUser.findByPk(userID);
-
-        if (!user) {
-            res.status(404).json({ error: 'User not found' });
-        } else {
-            await user.update({ position: newPosition });
-            res.json({ message: 'Position updated successfully' });
+            await gameUser.update({ position:newPosition });
+            res.json({ message: 'position updated' });
         }
     } catch (err) {
         console.error(err);
@@ -274,58 +179,59 @@ route.put("/updatePositions/:id", async (req, res) => {
 });
 
 
-route.get('/findAllGameUsers/:id', async (req, res) => {
-    const gameId = req.params.id;
-    try {
-        const gameUser = await GameUser.findAll();
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
 
-route.post('/game/joinGame', async (req, res) => {
-    const { boardID, noOfPlayers, status, capacity, currentUser, lastMove } = req.body;
-    try {
-        const game = await Game.create({
-            boardID,
-            noOfPlayers,
-            status,
-            capacity,
-            currentUser,
-            lastMove,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-        res.send('Game added');
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
 
-route.post('/addElement', async (req, res) => {
-    const { gameID, from, to } = req.body;
-    try {
-        const element = await Element.create({
-            gameid: gameID, // Renamed to 'gameid'
-            from,
-            to,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-        res.send('Element added');
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+// route.post('/game/joinGame', async (req, res) => {
+//     const { boardID, noOfPlayers, status, capacity, currentUser, lastMove } = req.body;
+//     try {
+//         const game = await Game.create({
+//             boardID,
+//             noOfPlayers,
+//             status,
+//             capacity,
+//             currentUser,
+//             lastMove,
+//             createdAt: new Date(),
+//             updatedAt: new Date(),
+//         });
+//         res.send('Game added');
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
+// route.post('/addElement', async (req, res) => {
+//     const { gameID, from, to } = req.body;
+//     try {
+//         const element = await Element.create({
+//             gameid: gameID, // Renamed to 'gameid'
+//             from,
+//             to,
+//             createdAt: new Date(),
+//             updatedAt: new Date(),
+//         });
+//         res.send('Element added');
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 route.get('/element', async (req, res) => {
+    const from = req.body.from;
+
     try {
-        const elements = await Element.findAll(); // Updated to use the correct model name 'Element'
-        res.json(elements); // Updated variable name from 'element' to 'elements'
+        const elements = await Elements.findOne({
+            where: { from },
+        });
+
+        if(!elements){
+            res.json(from);
+        }
+        else{
+            res.json(elements.to);
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -335,7 +241,7 @@ route.get('/element', async (req, res) => {
 route.delete('/gameuser/:id', async (req, res) => {
     const gameUserId = req.params.id;
     try {
-        const deletedGameUser = await GameUser.destroy({
+        const deletedGameUser = await GameUsers.destroy({
             where: { id: gameUserId },
         });
         if (deletedGameUser === 0) {
@@ -348,9 +254,47 @@ route.delete('/gameuser/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-// Sync Sequelize models and start the server
-sequelize.sync()
 
+
+route.get('/game-details/:gameid', async (req, res) => {
+    const gameId = req.params.gameid;
+
+    try {
+        const game = await Game.findByPk(gameId, {
+            attributes: [
+                'id',
+                'boardid',
+                'numberOfPlayers',
+                'status',
+                'capacity',
+                'currentTurn',
+                'lastMove',
+            ],
+            include: [
+                {
+                    model: GameUsers,
+                    attributes: ['id', 'userid', 'position'],
+                    include: [
+                        {
+                            model: User,
+                            attributes: ['name'],
+                        },
+                    ],
+                },
+
+            ],
+        });
+
+        if (!game) {
+            res.status(404).json({ error: 'Game not found' });
+        } else {
+            res.json(game);
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 export default route;

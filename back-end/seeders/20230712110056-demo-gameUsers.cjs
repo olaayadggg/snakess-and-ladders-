@@ -6,6 +6,7 @@ module.exports = {
     return queryInterface.bulkInsert('gameusers', [{
       userid: 1,
       position: 3,
+      gameid:1,
       createdAt: new Date(),
       updatedAt: new Date()
     }]);
