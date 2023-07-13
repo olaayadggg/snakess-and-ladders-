@@ -10,7 +10,6 @@ const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&
 // Define models
 
 // Sync Sequelize models and start the server
-sequelize.sync()
 
 
 class Game extends Model {
@@ -32,6 +31,7 @@ class Game extends Model {
     modelName: 'Game',
   });
 
+  sequelize.sync()
 
 export default Game;
 

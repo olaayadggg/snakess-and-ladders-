@@ -1,24 +1,22 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import routesControlles from './routes.controllers.js';
+import {createGame,deleteGame,game,deleteGameUser,login,getCapacityByGameId,createGameUser,register,getGameDetails,getElementById,updatePositions,startGame,getUserById} from './routes.controlles.js'; // Update the import statement
 
-const app = express();
 const router = express.Router();
 
-app.use(bodyParser.json());
 
-router.get('/game', routesControlles.game);
-router.delete('/gameuser/:id', routesControlles.deleteGameUser);
-router.delete('/game/:id', routesControlles.deleteGame);
-router.post('/Creategameuser', routesControlles.Creategameuser);
-router.get('/game-details/:gameid', routesControlles.getGameDetails);
-router.post('/login', routesControlles.login);
-router.get('/element', routesControlles.getElementByID);
-router.put("/updatePositions/:id/:position", routesControlles.updatePositions);
-router.put("/StartGame/:id", routesControlles.startGame);
-router.get('/users/:id', routesControlles.getUserByID);
-router.post('/register', routesControlles.register);
-router.get('/game/capacity/:gameid', routesControlles.getCapacityByGameId);
-router.post('/addElement', routesControlles.addElement);
 
-module.exports = router;
+router.get('/game', game);
+router.delete('/gameuser/:id', deleteGameUser);
+router.delete('/game/:id', deleteGame);
+router.post('/createGame',createGame)
+router.post('/Creategameuser', createGameUser);
+router.get('/games/:gameId/users', getGameDetails);
+router.post('/login', login);
+router.get('/element', getElementById);
+router.put("/updatePositions/:id/:position", updatePositions);
+router.put("/StartGame/:id", startGame);
+router.get('/users/:id', getUserById);
+router.get('/game/capacity/:gameid', getCapacityByGameId);
+router.post('/register', register); // Use the register function in the route definition
+
+export default router;

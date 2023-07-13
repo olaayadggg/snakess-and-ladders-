@@ -10,7 +10,6 @@ const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&
 // Define models
 
 // Sync Sequelize models and start the server
-sequelize.sync()
 class User extends Model {
   /**
    * Helper method for defining associations.
@@ -32,5 +31,6 @@ class User extends Model {
       modelName: 'User',
     }
   );
+  sequelize.sync()
 
   export default User;

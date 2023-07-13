@@ -16,7 +16,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       boardid: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Boards',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -26,6 +30,18 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    });
+
+    // Add the relation
+    await queryInterface.addConstraint('Elements', {
+      fields: ['boardid'],
+      type: 'foreign key',
+      name: 'fk_elements_boardid',
+      references: {
+        table: 'Boards',
+        field: 'id'
+      },
+      onDelete: 'CASCADE'
     });
   },
   async down(queryInterface, Sequelize) {

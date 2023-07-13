@@ -10,7 +10,6 @@ const sequelize = new Sequelize('snakes-and-ladders', 'root', '1234567890!@#$%^&
 // Define models
 
 // Sync Sequelize models and start the server
-sequelize.sync()
 class Board extends Model {
   static associate(models) {
     Board.hasMany(models.Elements, {foreignKey: 'boardid',});
@@ -27,5 +26,6 @@ class Board extends Model {
     modelName: 'Board',
   });
 
+  sequelize.sync()
 
 export default Board;
