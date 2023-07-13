@@ -3,63 +3,34 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Button, TextField, Stack, FormControl, Typography } from '@mui/material';
 import '../../App.css';
-import { UserContext } from '../../context/context.js';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 
-// import axios from 'axios'
+
 
 export default function RegisterPage2() {
-//   let x= useContext(UserContext)
+  const navigate = useNavigate();
 
+  const postUser = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:3001/register", data);
+      console.log("Response:", response.data);
+      console.log("Responseeeeeeeeeeeeeee:", response.data.id);
+      if (response.data.token) {
+        localStorage.setItem('userToken', response.data.token);
 
-//   useEffect(() => {
-// console.log(x.UserContextProvider);
-//   }, [])
+        navigate("/lobby", {
+          state: {
+            userId: response.data.id
+          },
+        });
+      }
+    } catch (err) {
+      console.log("Error:", err);
+    }
+  };
 
-
-//   function postUser() {
-
-//     let data = {
-//       name: 'mahmoud',
-//       password: "Mjhba"
-//     }
-//     x.register(data)
-//     // let res = await register(data)
-
-
-//   }
-
-
-// const products = useSelector((state) => state.allProducts.products);
-// const dispatch = useDispatch();
-// dispatch(
-//   postStartQuizRequest({
-//     course_id: quiz.course_id,
-//     quiz_id: quiz.quiz_id,
-//     body: {
-//       start_time: `${h}:${m}`,
-//     },
-//   })
-// );
-// let data={
-//   "name":"tasbeh",
-//   "password":"Tazem1ngedhe23"
-// }
-const postUsers = async (data) => {
-  console.log('inside')
-  const response = await axios
-      //   .get("https://jsonplaceholder.typicode.com/posts")
-      .post("http://localhost:3001/register",data)
-      .catch((err) => {
-          console.log("Err: ", err);
-      });
-  // dispatch(setProducts(response.data));
-};
-
-useEffect(() => {
- 
-}, []);
 
 
 
@@ -76,14 +47,14 @@ useEffect(() => {
       password: '',
     },
     validationSchema: mySchema,
-    onSubmit: (values) => login(values),
+    onSubmit: (values) => postUser(values), // Call the postUser function with form values
   });
 
   const login = (values) => {
     console.log('values', values);
     postUsers({
-      "name":"tasbeh",
-      "password":"Tazem1ngedhe23"
+      "name": "tasbeh",
+      "password": "Tazem1ngedhe23"
     });
   };
 

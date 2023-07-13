@@ -5,8 +5,16 @@ import PurpleButton from '../../Atoms/SharedComponents/PurpleButton'
 import '../../App.css'
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "../../redux/actions/productsActions";
+
 import axios from 'axios';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 export default function GamesPage() {
+    const location = useLocation();
+    console.log('location', location)
+    const navigate = useNavigate();
+
+    // console.log("hhhhhhhhhhhhhhhhhh" ,userID);
+
     const products = useSelector((state) => state.allProducts.products);
     const dispatch = useDispatch();
     const fetchProducts = async () => {
@@ -25,13 +33,45 @@ export default function GamesPage() {
     }, []);
     console.log('games reduxxxxxxxxxxx', products);
 
+    // const gameImgs = ["https://images.crazygames.com/snakesandladders.png?auto=format%2Ccompress&q=75&cs=strip&w=461&ch=DPR",
+    //     "https://www.cbc.ca/kids/images/snakesladders_play.jpg",
+    //     'https://th.bing.com/th/id/R.3b10f96df54d9b4a14e2a456d456f29a?rik=daxfE8bl3%2bOLDw&pid=ImgRaw&r=0']
+
+
+    const AddGameUser = async (data, gameId) => {
+        try {
+            const response = await axios.post('http://localhost:3001/gameuser', data);
+
+            navigate("/game", {
+                state: {
+                    gameId: gameId
+                },
+            });
+
+        } catch (err) {
+            console.log('Error:', err);
+        }
+    };
+
+    const joinGame = (gameId) => {
+        console.log("game id", gameId);
+        console.log("game id", location.state.userId);
+
+        AddGameUser({
+
+            "userid": location.state.userId,
+            "gameid": gameId,
+            "position": 0
+        }, gameId)
+    }
+
     return (
         <Box sx={{
             bgcolor: 'black', minHeight: '100vh'
         }} >
             <Container maxWidth="lg">
                 <Stack direction='row' spacing={2} sx={{
-                    mt: 2, justifyContent: 'center',
+                    py: 3, justifyContent: 'center',
                     alignItems: 'center'
                 }}>
 
@@ -47,25 +87,42 @@ export default function GamesPage() {
                     }}>
                     {products?.map((game, index) => {
                         return (
-                            <Stack key={index}
-                                className='glowing'
+                            <Stack key={game?.id}
+                                // className='glowing'
+                                className='jello-horizontal'
                                 sx={{
-                                    width: { md: 1 / 4, sm: 1 / 3, xs: 1 / 2 }, my: 3, mx: 1,
+                                    width: { md: 1 / 4, sm: 1 / 3, xs: 1 / 2 }, my: 3, mx: 2,
                                     boxShadow: 2, border: 3,
                                     borderColor: 'rgb(104, 66, 255)', borderRadius: 2
                                 }}>
-                                <Box sx={{ width: '100%', height: 1 / 3 }}>
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWfzFuFlmbtEsO47dSN6Upp8So7CBx9Gxqxg&usqp=CAU"
-                                        style={{ width: '100%' }} />
+
+                                <Box sx={{
+                                    // border:3,borderColor:'red',
+                                    width: '100%',
+                                    borderRadius: 2
+                                }}>
+                                    {index % 2 === 0 ?
+                                        <img src="https://images.crazygames.com/snakesandladders.png?auto=format%2Ccompress&q=75&cs=strip&w=461&ch=DPR"
+                                            style={{
+                                                width: '100%',
+                                                height: '18vh'
+                                            }} /> :
+
+                                        <img src="https://www.cbc.ca/kids/images/snakesladders_play.jpg"
+                                            style={{
+                                                width: '100%',
+                                                height: '18vh'
+                                            }} />
+                                    }
                                 </Box>
                                 <Stack sx={{
                                     mt: 2,
                                     justifyContent: 'center', alignItems: 'center'
                                 }}>
-                                    <Typography sx={{ color: 'white' }}>Created By : {game?.currentUser
+                                    <Typography sx={{ color: 'white' }}>Game id: {game?.id
                                     }</Typography>
 
-                                    <PurpleButton title={'JOIN'} />
+                                    <PurpleButton title={'JOIN'} onClick={() => joinGame(game.id)} />
                                 </Stack>
 
 

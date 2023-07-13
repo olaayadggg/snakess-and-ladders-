@@ -16,7 +16,7 @@ app.use(express.json());
 seedData();
 app.use(userRouters);
 
-app.listen(3005, () => {
+app.listen(3001, () => {
   console.log('Server is running');
 });
 
