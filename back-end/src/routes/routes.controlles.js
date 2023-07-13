@@ -1,7 +1,5 @@
-import express from 'express';
 import pkg from 'sequelize';
 const { Sequelize, DataTypes, Model ,Op} = pkg;
-import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import Game from "../../models/game.js";
 import GameUsers from "../../models/gameusers.js";
@@ -199,25 +197,7 @@ const updatePositions = async (req, res) => {
 
 
 
-route.post('/game/joinGame', async (req, res) => {
-    const { boardID, noOfPlayers, status, capacity, currentUser, lastMove } = req.body;
-    try {
-        const game = await Game.create({
-            boardID,
-            noOfPlayers,
-            status,
-            capacity,
-            currentUser,
-            lastMove,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-        res.send('Game added');
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+
 
 
 const getElementById =  async (req, res) => {
@@ -253,6 +233,23 @@ const deleteGameUser =  async (req, res) => {
             res.status(404).json({ error: 'Game user not found' });
         } else {
             res.send('Game user deleted');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const deleteGame =  async (req, res) => {
+    const gameId = req.params.id;
+    try {
+        const deletedGame = await Game.destroy({
+            where: { id: gameId },
+        });
+        if (deletedGame === 0) {
+            res.status(404).json({ error: 'Game not found' });
+        } else {
+            res.send('Game deleted');
         }
     } catch (err) {
         console.error(err);
@@ -303,4 +300,4 @@ const getGameDetails = async (req, res) => {
 
 
 
-export default [route  ,getCapacityByGameId,register,deleteGameUser,Creategameuser,getGameDetails,login,getElementById,updatePositions,startGame,getUserById];
+export default [deleteGame,getCapacityByGameId,register,deleteGameUser,Creategameuser,getGameDetails,login,getElementById,updatePositions,startGame,getUserById];
