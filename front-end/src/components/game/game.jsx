@@ -48,7 +48,7 @@ const Game = () => {
   }
 
 
-// const function 
+  // const function 
 
 
 
@@ -80,7 +80,18 @@ const Game = () => {
       <div className="container mt-5 m-auto">
         <h3 className="text-center">Snakes&Ladders</h3>
         <div className="row">
-          <div className="col-md-8 g-5">
+
+            <div className="col-md-1  top-0   ">
+            <div className="w-50 h-25 position-relative   bottom-0 ">
+
+              <div className="w-50 bg-dark h-25 rounded-5 bottom-0  "></div>
+
+            </div>
+          </div>
+
+          <div className="col-md-7 g-5">
+
+            <div className=" rounded-5  bg-black  " sty></div>
             <img src={img} className="w-100" alt="" />
           </div>
           <div className="col-md-4">

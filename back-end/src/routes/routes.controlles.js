@@ -143,7 +143,7 @@ route.post('/login', async (req, res) => {
             res.json({ userExist: false });
         } else {
             bcrypt.compare(password, user.password, (err, result) => {
-                if (!result) {
+                if (result) {
                     const token = generateToken(user); // Generate the token
                     res.json({ passwordIsRight: true, token, userid: user.id }); // Include the token in the response
                 } else {

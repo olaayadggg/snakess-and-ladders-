@@ -27,7 +27,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/board" element={<GameBoard />} />
+        <Route path="/board" element={<ProtectedRoutes><GameBoard/></ProtectedRoutes>} /> 
         <Route path="/register" element={<RegisterPage2 />} />
         <Route path="/login" element={<ProtectedRoutes><LoginPage /></ProtectedRoutes>} />
         <Route path="/lobby" element={<ProtectedRoutes><GamesPage /></ProtectedRoutes>} />

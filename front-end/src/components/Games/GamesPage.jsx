@@ -42,7 +42,7 @@ export default function GamesPage() {
         try {
             const response = await axios.post('http://localhost:3001/gameuser', data);
 
-            navigate("/game", {
+            navigate("/board", {
                 state: {
                     gameId: gameId
                 },

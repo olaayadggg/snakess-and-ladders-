@@ -200,6 +200,7 @@ document.getElementById("diceBtn").addEventListener("click", function () {
 
     num = Math.floor(Math.random() * (6 - 1 + 1) + 1)
     document.getElementById("dice").innerText = num
+    
 
 
     if (tog % 2 != 0) {
